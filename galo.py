@@ -5,6 +5,7 @@ from consts import *
 class Galo(Entity):
     def setStatus(self, newStatus):
         self.status = newStatus
+        self.frame = 0
 
     def setDir(self, newDir):
         self.dir = newDir
@@ -20,13 +21,9 @@ class Galo(Entity):
 
     def render(self, display):
         if self.status == STT_WALKING:
-            if self.dir == DIR_RIGTH:
-                display.blit(self.ss[0][int(self.frame)], (self.x, self.y))
-            else:
-                display.blit(self.ss[1][int(self.frame)], (self.x, self.y))
+            if self.dir == DIR_RIGTH: display.blit(self.ss[0][int(self.frame)], (self.x, self.y))
+            else: display.blit(self.ss[1][int(self.frame)], (self.x, self.y))
 
         elif self.status == STT_STOPED:
-            if self.dir == DIR_RIGTH:
-                display.blit(self.ss[0][0], (self.x, self.y))
-            else:
-                display.blit(self.ss[1][0], (self.x, self.y))
+            if self.dir == DIR_RIGTH: display.blit(self.ss[2][int(self.frame)], (self.x, self.y))
+            else: display.blit(self.ss[3][int(self.frame)], (self.x, self.y))

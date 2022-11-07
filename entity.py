@@ -14,7 +14,7 @@ class Entity(ABC):
         for i in range(maxLines):
             sprites = []
             for j in range(maxframes):
-                sprites.append(spritesheet.get_image(j, i, 38, 38, 2, (0, 0, 0)))
+                sprites.append(spritesheet.get_image(j, i, ENTITIES_SIZE, ENTITIES_SIZE, SCALE, (0, 0, 0)))
             self.ss.append(sprites)
 
     @abstractmethod

@@ -12,7 +12,7 @@ clock = pygame.time.Clock()
 
 # spritesheet do galo
 ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
-galo = Galo(450, 350, 3, ss, SCALE, 10)  # criando um galo
+galo = Galo(450, 350, 3, ss, 4, 10)  # criando um galo
 
 run = True
 while run:
