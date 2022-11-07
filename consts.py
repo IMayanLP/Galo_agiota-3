@@ -1,0 +1,28 @@
+### DISPLAY ###
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 700
+
+### GAME ###
+ANIMATION_SPEED = 0.2
+SPRITE_SIZE = 32
+SCALE = 2
+FPS = 60
+
+# GAME STAGES
+MENU = 0
+IN_GAME = 1
+GAME_OVER = 2
+
+### ENTITIES ###
+ENTITIES_SIZE = 38
+
+### PLAYER ###
+DIR_RIGTH = 1
+DIR_LEFT = -1
+
+STT_STOPED = 0
+STT_WALKING = 1
+
+NO_GRAVITY = 0 # no gravity
+GRAVITY_JUMP = -20 # jump gravity
+GRAVITY_SJUMP = -15 # secondary jump gravity
