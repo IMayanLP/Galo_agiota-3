@@ -6,6 +6,8 @@ class Entity(ABC):
     def __init__(self, x, y, vel, spritesheet, maxLines, maxframes):
         self.x = x
         self.y = y
+        self.w = 38
+        self.h = 38
         self.vel = vel
         self.dir = DIR_RIGTH
         self.status = 0

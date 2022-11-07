@@ -31,12 +31,17 @@ while run:
             if event.key == pygame.K_a:
                 galo.setStatus(STT_WALKING)
                 galo.setDir(DIR_LEFT)
+            if event.key == pygame.K_w:
+                if galo.colidiu():
+                    galo.gravity = -20
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
-                galo.setStatus(STT_STOPED)
+                if galo.dir == DIR_RIGTH:
+                    galo.setStatus(STT_STOPED)
             if event.key == pygame.K_a:
-                galo.setStatus(STT_STOPED)
+                if galo.dir == DIR_LEFT:
+                    galo.setStatus(STT_STOPED)
 
     pygame.display.update()
     clock.tick(FPS)
