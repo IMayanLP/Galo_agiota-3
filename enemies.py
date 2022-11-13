@@ -13,9 +13,9 @@ class Enemies:
 
     def tick(self, world, galo):
         if self.spawn >= 300:
-            x = galo.x + 150
-            if galo.coordToMatriz(x) > world.width - 1:
-                x = galo.x - 150
+            x = galo.colisionBox.x + galo.colisionBox.w + 150
+            if galo.coordToMatriz(x) >= world.width - 1:
+                x = galo.x - 300
             self.enemies['slimes'].append(Slime(x, 0, ENTITIES_SIZE, ENTITIES_SIZE, 2, STT_WALKING, self.sprites, 2, 10, Colision_box(galo.x + 150, 0, 30, 30, 4 * SCALE, 8 * SCALE)))
             self.spawn = 0
         else:

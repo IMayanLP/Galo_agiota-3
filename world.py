@@ -5,7 +5,7 @@ from spritesheet import SpriteSheet
 from consts import *
 
 class World:
-    def __init__(self, w, h):
+    def __init__(self, w, h, grama_sprite, file_name):
         self.phase = 1
         self.name = "fase" + str(self.phase) + ".txt"
         self.blocks = []
@@ -19,11 +19,11 @@ class World:
                 line.append(None)
             self.blocks.append(line)
 
-        with open('maps/map1.json', 'r') as map:
+        with open('maps/' + file_name, 'r') as map:
             decode = json.load(map)
 
         for obj in decode["blocos"]:
-            self.blocks[obj["j"]][obj["i"]] = Block(sps, obj["j"] * SPRITE_SIZE, obj["i"] * SPRITE_SIZE, 1)
+            self.blocks[obj["j"]][obj["i"]] = Block(grama_sprite, obj["j"] * SPRITE_SIZE, obj["i"] * SPRITE_SIZE, 1)
 
         self.width = len(self.blocks)
         self.heigth = len(self.blocks[0])

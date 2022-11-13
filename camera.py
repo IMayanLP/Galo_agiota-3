@@ -3,7 +3,7 @@ from consts import *
 
 class Camera:
     def __init__(self, start, end, vel):
-        self.displacement = 0
+        self.displacement = start
         self.start = start
         self.end = end
         self.vel = vel
