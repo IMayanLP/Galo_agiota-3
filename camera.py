@@ -9,5 +9,5 @@ class Camera:
         self.vel = vel
 
     def tick(self):
-        if self.displacement <= self.end:
+        if self.displacement + SCREEN_WIDTH < self.end:
             self.displacement += self.vel

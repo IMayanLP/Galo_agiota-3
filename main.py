@@ -18,8 +18,8 @@ clock = pygame.time.Clock()
 ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
 ss1 = SpriteSheet(pygame.image.load('src/spritesslime.png').convert_alpha())
 galo = Galo(450, 350, 38, 38, 3, STT_STOPED, ss, 4, 10, Colision_box(450, 350, 30, 30, 4 * SCALE, 8 * SCALE))
-mundo = World()
-cam = Camera(0, 500, 0)
+mundo = World(101, 11)
+cam = Camera(0, mundo.width * SPRITE_SIZE * SCALE, 1)
 inimigos = Enemies(4, ss1)
 
 run = True
