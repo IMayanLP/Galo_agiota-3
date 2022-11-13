@@ -4,7 +4,10 @@ from consts import *
 
 
 class Galo(Entity):
-    gravity = 0
+    maxLife = 3
+    currentLife = maxLife
+    invulnerable = 60
+    gravity = NO_GRAVITY
     jumping = False
 
     def setStatus(self, newStatus):
@@ -32,10 +35,10 @@ class Galo(Entity):
 
         self.enemies_Collision(enemies)
 
-        if self.frame > len(self.ss[self.status]) - 1:
-            self.frame = 0
-        else:
-            self.frame += 0.2
+        if self.invulnerable < 60:
+            self.invulnerable += 1
+
+        self.animate()
 
     def render(self, display, camera):
         if self.status == STT_WALKING:
@@ -49,6 +52,7 @@ class Galo(Entity):
     def enemies_Collision(self, e):
         x0 = self.colisionBox.x
         x1 = self.colisionBox.x + self.colisionBox.w
+        y0 = self.colisionBox.y
         y1 = self.colisionBox.y + self.colisionBox.h
         for i in range(len(e.enemies['slimes'])):
             if e.enemies['slimes'][i] is not None:
@@ -58,14 +62,27 @@ class Galo(Entity):
                                      e.enemies['slimes'][i].colisionBox.y,
                                      e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h) \
                         or self.is_Colliding(x1, y1,
-                                             e.enemies['slimes'][i].colisionBox.x,
-                                             e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
-                                             e.enemies['slimes'][i].colisionBox.y,
-                                             e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h):
+                                     e.enemies['slimes'][i].colisionBox.x,
+                                     e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
+                                     e.enemies['slimes'][i].colisionBox.y,
+                                     e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h) \
+                        or self.is_Colliding(x0, y0,
+                                     e.enemies['slimes'][i].colisionBox.x,
+                                     e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
+                                     e.enemies['slimes'][i].colisionBox.y,
+                                     e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h) \
+                        or self.is_Colliding(x1, y0,
+                                     e.enemies['slimes'][i].colisionBox.x,
+                                     e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
+                                     e.enemies['slimes'][i].colisionBox.y,
+                                     e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h):
                     if self.gravity > 0 and e.enemies['slimes'][i].alive:
-                        self.gravity = GRAVITY_SJUMP
+                        self.setGravity(GRAVITY_SJUMP)
                         self.jumping = False
                         e.enemies['slimes'][i].alive = False
+                    elif self.invulnerable == 60 and e.enemies['slimes'][i].alive:
+                        self.currentLife -= 1
+                        self.invulnerable = 0
 
     def is_Colliding(self, p0, p1, x0, x1, y0, y1):
         if x0 <= p0 <= x1 and y0 <= p1 <= y1:

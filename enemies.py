@@ -9,18 +9,21 @@ class Enemies:
         self.sprites = sprites
         self.spawn = 0
         for i in range(slimes_amount):
-            self.enemies['slimes'].append(Slime(i*300, 0, 38, 38, 2, STT_WALKING, sprites, 2, 10, Colision_box(i*300, 0, 30, 30, 4 * SCALE, 8 * SCALE)))
+            self.enemies['slimes'].append(Slime(i*300, 0, ENTITIES_SIZE, ENTITIES_SIZE, 2, STT_WALKING, sprites, 2, 10, Colision_box(i*300, 0, 30, 30, 4 * SCALE, 8 * SCALE)))
 
     def tick(self, world, galo):
         if self.spawn >= 300:
-            self.enemies['slimes'].append(Slime(galo.x + 150, 0, 38, 38, 2, STT_WALKING, self.sprites, 2, 10, Colision_box(galo.x + 150, 0, 30, 30, 4 * SCALE, 8 * SCALE)))
+            x = galo.x + 150
+            if galo.coordToMatriz(x) > world.width - 1:
+                x = galo.x - 150
+            self.enemies['slimes'].append(Slime(x, 0, ENTITIES_SIZE, ENTITIES_SIZE, 2, STT_WALKING, self.sprites, 2, 10, Colision_box(galo.x + 150, 0, 30, 30, 4 * SCALE, 8 * SCALE)))
             self.spawn = 0
         else:
             self.spawn += 1
 
         for i in range(len(self.enemies['slimes'])):
             if self.enemies['slimes'][i] is not None:
-                if self.enemies['slimes'][i].timer > 50:
+                if self.enemies['slimes'][i].deadTimer > 50:
                     self.enemies['slimes'][i] = None
                 else:
                     self.enemies['slimes'][i].tick(world, galo)

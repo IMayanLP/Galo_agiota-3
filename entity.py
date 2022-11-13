@@ -30,6 +30,12 @@ class Entity(ABC):
     def render(self, display):
         pass
 
+    def animate(self):
+        if self.frame > len(self.ss[self.status]) - 1:
+            self.frame = 0
+        else:
+            self.frame += ANIMATION_SPEED
+
     def collisionY(self, world):
         x0 = self.coordToMatriz(self.colisionBox.x)
         y1 = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h + self.gravity)
@@ -57,6 +63,8 @@ class Entity(ABC):
         x1 = self.coordToMatriz(self.colisionBox.x + (self.vel * self.dir))
         y0 = self.coordToMatriz(self.colisionBox.y - 1)
         y1 = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h - 1)
+        if x0 > world.width - 1:
+            return True
         if world.blocks[x0][y1] is not None:
             if world.blocks[x0][y1].type == 1:
                 return True
