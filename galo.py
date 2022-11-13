@@ -17,21 +17,20 @@ class Galo(Entity):
     def setGravity(self, newGravity):
         self.gravity = newGravity
 
-    def coordToMatriz(self, coord):
-        return int(coord / (SPRITE_SIZE * SCALE))
-
-    def tick(self, world):
+    def tick(self, world, enemies):
         self.colisionBox.update(self.x, self.y)
         if self.status == STT_WALKING:
-            if not self.colidiuX(world):
+            if not self.collisionX(world):
                 self.x += self.vel * self.dir
 
-        if not self.colidiuY(world):
+        if not self.collisionY(world):
             self.gravity += 1
             self.y += self.gravity
         else:
             self.jumping = False
-            self.gravity = 0
+            self.setGravity(0)
+
+        self.enemies_Collision(enemies)
 
         if self.frame > len(self.ss[self.status]) - 1:
             self.frame = 0
@@ -47,40 +46,28 @@ class Galo(Entity):
             if self.dir == DIR_RIGTH: display.blit(self.ss[2][int(self.frame)], (self.x - camera.displacement, self.y))
             else: display.blit(self.ss[3][int(self.frame)], (self.x - camera.displacement, self.y))
 
-    def colidiuY(self, world):
-        x0 = self.coordToMatriz(self.colisionBox.x)
-        y1 = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h + self.gravity)
-        x1 = self.coordToMatriz(self.colisionBox.x + self.colisionBox.w)
-        y0 = self.coordToMatriz(self.colisionBox.y + self.gravity + 15)
-        if world.blocks[x0][y1] is not None:
-            if world.blocks[x0][y1].type == 1:
-                return True
-        if world.blocks[x1][y1] is not None:
-            if world.blocks[x1][y1].type == 1:
-                return True
-        if world.blocks[x0][y0] is not None:
-            if world.blocks[x0][y0].type == 1:
-                return True
-        if world.blocks[x1][y0] is not None:
-            if world.blocks[x1][y0].type == 1:
-                return True
-        return False
+    def enemies_Collision(self, e):
+        x0 = self.colisionBox.x
+        x1 = self.colisionBox.x + self.colisionBox.w
+        y1 = self.colisionBox.y + self.colisionBox.h
+        for i in range(len(e.enemies['slimes'])):
+            if e.enemies['slimes'][i] is not None:
+                if self.is_Colliding(x0, y1,
+                                     e.enemies['slimes'][i].colisionBox.x,
+                                     e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
+                                     e.enemies['slimes'][i].colisionBox.y,
+                                     e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h) \
+                        or self.is_Colliding(x1, y1,
+                                             e.enemies['slimes'][i].colisionBox.x,
+                                             e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
+                                             e.enemies['slimes'][i].colisionBox.y,
+                                             e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h):
+                    if self.gravity > 0 and e.enemies['slimes'][i].dead == False:
+                        self.gravity = GRAVITY_SJUMP
+                        self.jumping = False
+                        e.enemies['slimes'][i].dead = True
 
-    def colidiuX(self, world):
-        x0 = self.coordToMatriz(self.colisionBox.x + self.colisionBox.w + (self.vel * self.dir))
-        x1 = self.coordToMatriz(self.colisionBox.x + (self.vel * self.dir))
-        y0 = self.coordToMatriz(self.colisionBox.y - 1)
-        y1 = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h - 1)
-        if world.blocks[x0][y1] is not None:
-            if world.blocks[x0][y1].type == 1:
-                return True
-        if world.blocks[x0][y0] is not None:
-            if world.blocks[x0][y0].type == 1:
-                return True
-        if world.blocks[x1][y0] is not None:
-            if world.blocks[x1][y0].type == 1:
-                return True
-        if world.blocks[x1][y1] is not None:
-            if world.blocks[x1][y1].type == 1:
-                return True
+    def is_Colliding(self, p0, p1, x0, x1, y0, y1):
+        if x0 <= p0 <= x1 and y0 <= p1 <= y1:
+            return True
         return False

@@ -4,6 +4,7 @@ from galo import Galo
 from world import World
 from camera import Camera
 from colision_box import Colision_box
+from enemies import Enemies
 from consts import *
 
 pygame.init()
@@ -15,16 +16,20 @@ clock = pygame.time.Clock()
 
 # spritesheet do galo
 ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
-galo = Galo(450, 350, ENTITIES_SIZE, ENTITIES_SIZE, 3, ss, 4, 10, Colision_box(450, 350, 30, 30, 4 * SCALE, 8 * SCALE))
+ss1 = SpriteSheet(pygame.image.load('src/spritesslime.png').convert_alpha())
+galo = Galo(450, 350, 38, 38, 3, STT_STOPED, ss, 4, 10, Colision_box(450, 350, 30, 30, 4 * SCALE, 8 * SCALE))
 mundo = World()
-cam = Camera(0, 500, 1)
+cam = Camera(0, 500, 0)
+inimigos = Enemies(4, ss1)
 
 run = True
 while run:
     dis.fill((50, 50, 50))
-    galo.tick(mundo)
+    galo.tick(mundo, inimigos)
+    inimigos.tick(mundo, galo)
     cam.tick()
     mundo.render(dis, cam)
+    inimigos.render(dis, cam)
     galo.render(dis, cam)
 
     for event in pygame.event.get():
@@ -41,7 +46,7 @@ while run:
                 galo.setStatus(STT_WALKING)
                 galo.setDir(DIR_LEFT)
             if event.key == pygame.K_w:
-                if galo.colidiuY(mundo):
+                if galo.collisionY(mundo):
                     galo.jumping = True
                     galo.gravity = GRAVITY_JUMP
                 elif galo.jumping:
