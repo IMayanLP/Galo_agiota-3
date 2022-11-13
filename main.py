@@ -2,6 +2,7 @@ import pygame
 from spritesheet import SpriteSheet
 from galo import Galo
 from world import World
+from colision_box import Colision_box
 from consts import *
 
 pygame.init()
@@ -13,7 +14,7 @@ clock = pygame.time.Clock()
 
 # spritesheet do galo
 ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
-galo = Galo(450, 350, 3, ss, 4, 10)  # criando um galo
+galo = Galo(450, 350, ENTITIES_SIZE, ENTITIES_SIZE, 3, ss, 4, 10, Colision_box(450, 350, 30, 30, 4 * SCALE, 8 * SCALE))
 mundo = World()
 
 run = True
@@ -38,7 +39,11 @@ while run:
                 galo.setDir(DIR_LEFT)
             if event.key == pygame.K_w:
                 if galo.colidiuY(mundo):
-                    galo.setGravity(-20)
+                    galo.jumping = True
+                    galo.gravity = GRAVITY_JUMP
+                elif galo.jumping:
+                    galo.jumping = False
+                    galo.gravity = GRAVITY_SJUMP
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_d:

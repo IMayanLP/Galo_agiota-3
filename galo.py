@@ -1,11 +1,12 @@
 import pygame
 from entity import Entity
-from world import World
+from colision_box import Colision_box
 from consts import *
 
 
 class Galo(Entity):
     gravity = 0
+    jumping = False
 
     def setStatus(self, newStatus):
         self.status = newStatus
@@ -21,6 +22,7 @@ class Galo(Entity):
         return int(coord / (SPRITE_SIZE * SCALE))
 
     def tick(self, world):
+        self.colisionBox.update(self.x, self.y)
         if self.status == STT_WALKING:
             if not self.colidiuX(world):
                 self.x += self.vel * self.dir
@@ -29,6 +31,7 @@ class Galo(Entity):
             self.gravity += 1
             self.y += self.gravity
         else:
+            self.jumping = False
             self.gravity = 0
 
         if self.frame > len(self.ss[self.status]) - 1:
@@ -37,6 +40,7 @@ class Galo(Entity):
             self.frame += 0.2
 
     def render(self, display):
+        self.colisionBox.render(display)
         if self.status == STT_WALKING:
             if self.dir == DIR_RIGTH: display.blit(self.ss[0][int(self.frame)], (self.x, self.y))
             else: display.blit(self.ss[1][int(self.frame)], (self.x, self.y))
@@ -46,10 +50,10 @@ class Galo(Entity):
             else: display.blit(self.ss[3][int(self.frame)], (self.x, self.y))
 
     def colidiuY(self, world):
-        x0 = self.coordToMatriz(self.x)
-        y1 = self.coordToMatriz(self.y + (self.h * SCALE) + self.gravity)
-        x1 = self.coordToMatriz(self.x + (self.w * SCALE))
-        y0 = self.coordToMatriz(self.y + self.gravity + 15)
+        x0 = self.coordToMatriz(self.colisionBox.x)
+        y1 = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h + self.gravity)
+        x1 = self.coordToMatriz(self.colisionBox.x + self.colisionBox.w)
+        y0 = self.coordToMatriz(self.colisionBox.y + self.gravity + 15)
         if world.blocks[x0][y1] is not None:
             if world.blocks[x0][y1].type == 1:
                 return True
@@ -65,10 +69,10 @@ class Galo(Entity):
         return False
 
     def colidiuX(self, world):
-        x0 = self.coordToMatriz(self.x + (self.w * SCALE) + (self.vel * self.dir))
-        x1 = self.coordToMatriz(self.x + (self.vel * self.dir))
-        y0 = self.coordToMatriz(self.y - 1)
-        y1 = self.coordToMatriz(self.y + (self.h * SCALE) - 1)
+        x0 = self.coordToMatriz(self.colisionBox.x + self.colisionBox.w + (self.vel * self.dir))
+        x1 = self.coordToMatriz(self.colisionBox.x + (self.vel * self.dir))
+        y0 = self.coordToMatriz(self.colisionBox.y - 1)
+        y1 = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h - 1)
         if world.blocks[x0][y1] is not None:
             if world.blocks[x0][y1].type == 1:
                 return True

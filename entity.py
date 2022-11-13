@@ -3,11 +3,12 @@ from consts import *
 
 
 class Entity(ABC):
-    def __init__(self, x, y, vel, spritesheet, maxLines, maxframes):
+    def __init__(self, x, y, w, h, vel, spritesheet, maxLines, maxframes, colisionBox):
         self.x = x
         self.y = y
-        self.w = 38
-        self.h = 38
+        self.w = w
+        self.h = h
+        self.colisionBox = colisionBox
         self.vel = vel
         self.dir = DIR_RIGTH
         self.status = 0
