@@ -1,6 +1,7 @@
 import pygame
 from spritesheet import SpriteSheet
 from galo import Galo
+from world import World
 from consts import *
 
 pygame.init()
@@ -13,11 +14,13 @@ clock = pygame.time.Clock()
 # spritesheet do galo
 ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
 galo = Galo(450, 350, 3, ss, 4, 10)  # criando um galo
+mundo = World()
 
 run = True
 while run:
     dis.fill((50, 50, 50))
-    galo.tick()
+    galo.tick(mundo)
+    mundo.render(dis)
     galo.render(dis)
 
     for event in pygame.event.get():
@@ -25,6 +28,8 @@ while run:
             run = False
 
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                run = False
             if event.key == pygame.K_d:
                 galo.setStatus(STT_WALKING)
                 galo.setDir(DIR_RIGTH)
@@ -32,8 +37,8 @@ while run:
                 galo.setStatus(STT_WALKING)
                 galo.setDir(DIR_LEFT)
             if event.key == pygame.K_w:
-                if galo.colidiu():
-                    galo.gravity = -20
+                if galo.colidiuY(mundo):
+                    galo.setGravity(-20)
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
