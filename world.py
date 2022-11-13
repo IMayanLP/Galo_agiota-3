@@ -20,10 +20,10 @@ class World:
         self.blocks[10][9] = Block(sps, 10 * SPRITE_SIZE, 9 * SPRITE_SIZE, 1)
         self.blocks[5][8] = Block(sps, 5 * SPRITE_SIZE, 8 * SPRITE_SIZE, 1)
 
-    def render(self, display):
+    def render(self, display, camera):
         for i in range(20):
-            pygame.draw.line(display, (255, 0, 255), (i * SCALE * SPRITE_SIZE, 0), (i * SCALE * SPRITE_SIZE, SCREEN_HEIGHT))
+            pygame.draw.line(display, (255, 0, 255), (i * SCALE * SPRITE_SIZE - camera.displacement, 0), (i * SCALE * SPRITE_SIZE - camera.displacement, SCREEN_HEIGHT))
             for j in range(12):
                 pygame.draw.line(display, (0, 0, 255), (0, j * SCALE * SPRITE_SIZE), (SCREEN_WIDTH, j * SCALE * SPRITE_SIZE))
                 if self.blocks[i][j] is not None:
-                    display.blit(self.blocks[i][j].sprite, (self.blocks[i][j].x * SCALE, self.blocks[i][j].y * SCALE))
+                    display.blit(self.blocks[i][j].sprite, (self.blocks[i][j].x * SCALE - camera.displacement, self.blocks[i][j].y * SCALE))

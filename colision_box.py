@@ -13,6 +13,3 @@ class Colision_box():
     def update(self, newX, newY):
         self.x = newX + self.distance_x
         self.y = newY + self.distance_y
-
-    def render(self, display):
-        pygame.draw.rect(display, (255, 255, 255), pygame.Rect(self.x, self.y, self.w, self.h), 1)

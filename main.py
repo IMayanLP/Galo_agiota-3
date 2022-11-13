@@ -2,6 +2,7 @@ import pygame
 from spritesheet import SpriteSheet
 from galo import Galo
 from world import World
+from camera import Camera
 from colision_box import Colision_box
 from consts import *
 
@@ -16,13 +17,15 @@ clock = pygame.time.Clock()
 ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
 galo = Galo(450, 350, ENTITIES_SIZE, ENTITIES_SIZE, 3, ss, 4, 10, Colision_box(450, 350, 30, 30, 4 * SCALE, 8 * SCALE))
 mundo = World()
+cam = Camera(0, 500, 1)
 
 run = True
 while run:
     dis.fill((50, 50, 50))
     galo.tick(mundo)
-    mundo.render(dis)
-    galo.render(dis)
+    cam.tick()
+    mundo.render(dis, cam)
+    galo.render(dis, cam)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

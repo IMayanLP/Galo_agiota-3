@@ -1,6 +1,5 @@
 import pygame
 from entity import Entity
-from colision_box import Colision_box
 from consts import *
 
 
@@ -39,15 +38,14 @@ class Galo(Entity):
         else:
             self.frame += 0.2
 
-    def render(self, display):
-        self.colisionBox.render(display)
+    def render(self, display, camera):
         if self.status == STT_WALKING:
-            if self.dir == DIR_RIGTH: display.blit(self.ss[0][int(self.frame)], (self.x, self.y))
-            else: display.blit(self.ss[1][int(self.frame)], (self.x, self.y))
+            if self.dir == DIR_RIGTH: display.blit(self.ss[0][int(self.frame)], (self.x - camera.displacement, self.y))
+            else: display.blit(self.ss[1][int(self.frame)], (self.x - camera.displacement, self.y))
 
         elif self.status == STT_STOPED:
-            if self.dir == DIR_RIGTH: display.blit(self.ss[2][int(self.frame)], (self.x, self.y))
-            else: display.blit(self.ss[3][int(self.frame)], (self.x, self.y))
+            if self.dir == DIR_RIGTH: display.blit(self.ss[2][int(self.frame)], (self.x - camera.displacement, self.y))
+            else: display.blit(self.ss[3][int(self.frame)], (self.x - camera.displacement, self.y))
 
     def colidiuY(self, world):
         x0 = self.coordToMatriz(self.colisionBox.x)
