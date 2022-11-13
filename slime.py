@@ -4,7 +4,6 @@ from consts import *
 
 class Slime(Entity):
     gravity = 0
-    dead = False
     range = 150
     timer = 0
 
@@ -12,9 +11,9 @@ class Slime(Entity):
         self.gravity = newGravity
 
     def tick(self, world, galo):
-        if not self.dead:
+        if self.alive:
             self.colisionBox.update(self.x, self.y)
-            distance = galo.x - self.x
+            """distance = galo.x - self.x
             if distance < 0: distance *= -1
             if distance < self.range:
                 if galo.x < self.x:
@@ -24,6 +23,10 @@ class Slime(Entity):
             else:
                 if int(random() * 1000) % 17 == 0:
                     self.dir *= -1
+            """
+
+            if int(random() * 1000) % 17 == 0:
+                self.dir *= -1
 
             if not self.collisionY(world):
                 self.gravity += 1
@@ -32,7 +35,7 @@ class Slime(Entity):
                 self.gravity = 0
 
             if not self.collisionX(world):
-                if self.x + self.vel * self.dir < 1200:
+                if self.x + (self.vel * self.dir) < world.width * SPRITE_SIZE * SCALE:
                     self.x += self.vel * self.dir
             else:
                 if self.collisionY(world):
@@ -47,7 +50,7 @@ class Slime(Entity):
             self.frame += 0.2
 
     def render(self, display, camera):
-        if not self.dead:
+        if self.alive:
             display.blit(self.ss[0][int(self.frame)], (self.x - camera.displacement, self.y))
         else:
             display.blit(self.ss[1][int(self.frame)], (self.x - camera.displacement, self.y))

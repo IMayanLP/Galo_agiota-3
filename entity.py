@@ -4,6 +4,7 @@ from consts import *
 
 class Entity(ABC):
     def __init__(self, x, y, w, h, vel, status, spritesheet, maxLines, maxframes, colisionBox):
+        self.alive = True
         self.x = x
         self.y = y
         self.w = w
@@ -34,6 +35,9 @@ class Entity(ABC):
         y1 = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h + self.gravity)
         x1 = self.coordToMatriz(self.colisionBox.x + self.colisionBox.w)
         y0 = self.coordToMatriz(self.colisionBox.y + self.gravity + 15)
+        if y1 > world.heigth - 1:
+            self.alive = False
+            return True
         if world.blocks[x0][y1] is not None:
             if world.blocks[x0][y1].type == 1:
                 return True

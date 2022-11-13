@@ -32,6 +32,9 @@ while run:
     inimigos.render(dis, cam)
     galo.render(dis, cam)
 
+    if not galo.alive:
+        run = False
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False

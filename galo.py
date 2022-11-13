@@ -62,10 +62,10 @@ class Galo(Entity):
                                              e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
                                              e.enemies['slimes'][i].colisionBox.y,
                                              e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h):
-                    if self.gravity > 0 and e.enemies['slimes'][i].dead == False:
+                    if self.gravity > 0 and e.enemies['slimes'][i].alive:
                         self.gravity = GRAVITY_SJUMP
                         self.jumping = False
-                        e.enemies['slimes'][i].dead = True
+                        e.enemies['slimes'][i].alive = False
 
     def is_Colliding(self, p0, p1, x0, x1, y0, y1):
         if x0 <= p0 <= x1 and y0 <= p1 <= y1:
