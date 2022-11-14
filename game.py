@@ -1,7 +1,8 @@
 import pygame
 from random import random
-
 from consts import *
+
+from sky import Sky
 from galo import Galo
 from world import World
 from button import Button
@@ -23,7 +24,8 @@ class Game:
             'heartSprite': [],
             'buttonPlay': Button(536, 300, botao_play),
             'buttonExit': Button(536, 400, botao_sair),
-            'buttonRetry': Button(536, 300, botao_retry)
+            'buttonRetry': Button(536, 300, botao_retry),
+            'sky': None
         }
         for i in range(2):
             self.interface['heartSprite'].append(heart_ss.get_image(i, 0, SPRITE_SIZE, SPRITE_SIZE, 1, (0, 0, 0)))
@@ -36,7 +38,9 @@ class Game:
     def gameInit(self):
         galo_ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
         slime_ss = SpriteSheet(pygame.image.load('src/spritesslime.png').convert_alpha())
+        sky_ss = pygame.image.load('src/ceu1.png').convert_alpha()
         grama_ss = SpriteSheet(pygame.image.load('src/grama.png').convert_alpha())
+        self.interface['sky'] = Sky(sky_ss)
         self.galo = Galo(350, 350, ENTITIES_SIZE, ENTITIES_SIZE, 3, STT_STOPED, galo_ss, 4, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE))
         self.mundo = World(101, 11, grama_ss, 'map1.json')
         self.cam = Camera(0, self.mundo.width * SPRITE_SIZE * SCALE, 2)
@@ -47,6 +51,7 @@ class Game:
             if self.galo.currentLife <= 0 or self.galo.colisionBox.x + self.galo.colisionBox.w < self.cam.displacement:
                 self.stage = GAME_OVER
             self.cam.tick()
+            self.interface['sky'].tick(self.cam)
             self.inimigos.tick(self.mundo, self.galo)
             self.galo.tick(self.mundo, self.inimigos)
 
@@ -57,6 +62,7 @@ class Game:
             self.interface['buttonExit'].render(dis)
         elif self.stage == IN_GAME:
             dis.fill((50, 50, 50))
+            self.interface['sky'].render(dis)
             self.mundo.render(dis, self.cam)
             self.inimigos.render(dis, self.cam)
             self.galo.render(dis, self.cam)
