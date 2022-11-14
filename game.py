@@ -39,10 +39,14 @@ class Game:
         galo_ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
         slime_ss = SpriteSheet(pygame.image.load('src/spritesslime.png').convert_alpha())
         sky_ss = pygame.image.load('src/ceu1.png').convert_alpha()
-        grama_ss = SpriteSheet(pygame.image.load('src/grama.png').convert_alpha())
+        sprites = [
+            SpriteSheet(pygame.image.load('src/grama.png').convert_alpha()),
+            SpriteSheet(pygame.image.load('src/terra.png').convert_alpha()),
+            SpriteSheet(pygame.image.load('src/pedra.png').convert_alpha())
+        ]
+        self.galo = Galo(350, 0, ENTITIES_SIZE, ENTITIES_SIZE, 3, STT_STOPED, galo_ss, 4, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE))
+        self.mundo = World(101, 11, sprites, 'map1.json')
         self.interface['sky'] = Sky(sky_ss)
-        self.galo = Galo(350, 350, ENTITIES_SIZE, ENTITIES_SIZE, 3, STT_STOPED, galo_ss, 4, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE))
-        self.mundo = World(101, 11, grama_ss, 'map1.json')
         self.cam = Camera(0, self.mundo.width * SPRITE_SIZE * SCALE, 2)
         self.inimigos = Enemies(int(random() * 10), slime_ss)
 
