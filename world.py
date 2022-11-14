@@ -23,7 +23,7 @@ class World:
             decode = json.load(map)
 
         for obj in decode["blocos"]:
-            self.blocks[obj["j"]][obj["i"]] = Block(sprites[(obj["type"] - 1)], obj["j"] * SPRITE_SIZE, obj["i"] * SPRITE_SIZE, 1)
+            self.blocks[obj["j"]][obj["i"]] = Block(sprites[(obj["type"] - 1)], obj["j"] * SPRITE_SIZE, obj["i"] * SPRITE_SIZE, True)
 
         self.width = len(self.blocks)
         self.heigth = len(self.blocks[0])
