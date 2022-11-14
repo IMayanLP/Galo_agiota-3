@@ -6,6 +6,7 @@ class Slime(Entity):
     gravity = 0
     range = 150
     deadTimer = 0
+    damage = 1
 
     def setGravity(self, newGravity):
         self.gravity = newGravity

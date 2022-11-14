@@ -50,38 +50,15 @@ class Galo(Entity):
             else: display.blit(self.ss[3][int(self.frame)], (self.x - camera.displacement, self.y))
 
     def enemies_Collision(self, e):
-        x0 = self.colisionBox.x
-        x1 = self.colisionBox.x + self.colisionBox.w
-        y0 = self.colisionBox.y
-        y1 = self.colisionBox.y + self.colisionBox.h
         for i in range(len(e.enemies['slimes'])):
             if e.enemies['slimes'][i] is not None:
-                if self.is_Colliding(x0, y1,
-                                     e.enemies['slimes'][i].colisionBox.x,
-                                     e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
-                                     e.enemies['slimes'][i].colisionBox.y,
-                                     e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h) \
-                        or self.is_Colliding(x1, y1,
-                                     e.enemies['slimes'][i].colisionBox.x,
-                                     e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
-                                     e.enemies['slimes'][i].colisionBox.y,
-                                     e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h) \
-                        or self.is_Colliding(x0, y0,
-                                     e.enemies['slimes'][i].colisionBox.x,
-                                     e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
-                                     e.enemies['slimes'][i].colisionBox.y,
-                                     e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h) \
-                        or self.is_Colliding(x1, y0,
-                                     e.enemies['slimes'][i].colisionBox.x,
-                                     e.enemies['slimes'][i].colisionBox.x + e.enemies['slimes'][i].colisionBox.w,
-                                     e.enemies['slimes'][i].colisionBox.y,
-                                     e.enemies['slimes'][i].colisionBox.y + e.enemies['slimes'][i].colisionBox.h):
+                if self.check_Collision(e.enemies['slimes'][i]):
                     if self.gravity > 0 and e.enemies['slimes'][i].alive:
                         self.setGravity(GRAVITY_SJUMP)
                         self.jumping = False
                         e.enemies['slimes'][i].alive = False
                     elif self.invulnerable == 60 and e.enemies['slimes'][i].alive:
-                        self.currentLife -= 1
+                        self.currentLife -= e.enemies['slimes'][i].damage
                         self.invulnerable = 0
 
     def is_Colliding(self, p0, p1, x0, x1, y0, y1):
