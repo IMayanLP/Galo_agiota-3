@@ -19,7 +19,6 @@ class Entity(ABC):
         self.status = status
         self.vel = vel
         self.dir = DIR_RIGTH
-        self.status = 0
         self.frame = 0
         self.ss = []
         for i in range(maxLines):

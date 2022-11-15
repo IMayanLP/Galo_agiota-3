@@ -6,6 +6,7 @@ from sky import Sky
 from coin import Coin
 from galo import Galo
 from world import World
+from slime import Slime
 from button import Button
 from camera import Camera
 from enemies import Enemies
@@ -32,6 +33,7 @@ class Game:
         botao_next = pygame.image.load('src/next1.png').convert_alpha()
         botao_next2 = pygame.image.load('src/next2.png').convert_alpha()
         title = pygame.image.load('src/title.png').convert_alpha()
+        tour = pygame.image.load('src/tour.png').convert_alpha()
         self.interface = {
             'heartSprite': [],
             'buttonPlay': Button(536, 300, botao_play, botao_play2),
@@ -41,6 +43,7 @@ class Game:
             'buttonNext': Button(536, 200, botao_next, botao_next2),
             'buttonHowPlay': Button(965, 600, botao_howPlay, botao_howPlay2),
             'Title': Button(420, -40, title, title),
+            'Tour': Button(22, 10, tour, tour),
             'sky': Sky(sky_ss, 1)
         }
         for i in range(2):
@@ -58,10 +61,21 @@ class Game:
         self.coin = None
         self.run = True
         self.menu_map = World(101, 11, self.sprites, "menu.json")
+        self.cam = Camera(0, self.menu_map.width * SPRITE_SIZE * SCALE, 0)
         self.menu_galo = Galo(350, 0, ENTITIES_SIZE, ENTITIES_SIZE, 3, STT_WALKING, galo_ss, 6, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE), SCALE)
         self.menu_galo.setStatus(STT_WALKING)
         self.menu_timer = 0
-        self.cam = Camera(0, self.menu_map.width * SPRITE_SIZE * SCALE, 0)
+        self.tour_index = 0
+        self.tour = self.tour = [
+            "Utilize A e D para se movimentar",
+            "Ótimo, agora utilize W para pular",
+            "Use o W novamente enquanto está no ar e faça um double jump",
+            "Agora pule encima dos inimigos para matá-los",
+            "Eles dropam moedas, pege-as para ganhar pontos de agiotagem",
+            "em jogo, ESC para pausar e O para passar de nível (cheat)"
+        ]
+        self.menu_slime = None
+        self.menu_coin = None
 
     def gameInit(self):
         galo_ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
@@ -78,7 +92,15 @@ class Game:
         self.inimigos = Enemies(int(random() * 10), enemies_sprites)
         self.coin = Coin(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, STT_STOPED, coin_ss, 1, 8, Colision_box(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, 0), SCALE)
 
+    def start_tour(self):
+        slimes_ss = SpriteSheet(pygame.image.load('src/spritesslime.png').convert_alpha())
+        coin_ss = SpriteSheet(pygame.image.load('src/moedass.png').convert_alpha())
+        self.menu_slime = Slime(800, 0, ENTITIES_SIZE, ENTITIES_SIZE, 2, STT_STOPED, slimes_ss, 2, 10, Colision_box(800, 0, 30, 30, 4 * SCALE, 8 * SCALE), SCALE)
+        self.menu_coin = Coin(800, 500, ENTITIES_SIZE, ENTITIES_SIZE, 0, STT_STOPED, coin_ss, 1, 8, Colision_box(800, 500, ENTITIES_SIZE / 2, ENTITIES_SIZE / 2, 0, 0), 1)
+        self.tour_index = 0
+
     def tick(self):
+        print(self.tour_index)
         self.x, self.y = pygame.mouse.get_pos()
         if self.stage == IN_GAME:
             if self.coin.caught:
@@ -90,6 +112,7 @@ class Game:
             self.inimigos.tick(self.mundo, self.galo)
             self.coin.tick(self.galo)
             self.galo.tick(self.mundo, self.inimigos)
+
         elif self.stage == MENU:
             if self.menu_timer == 180:
                 num = int(random() * 1000)
@@ -111,7 +134,21 @@ class Game:
             self.interface['sky'].tick(self.cam)
             self.menu_galo.tick(self.menu_map, self.inimigos)
 
-    def render(self, dis):
+        elif self.stage == GAME_TOUR:
+            if self.menu_slime.deadTimer > 60:
+                self.menu_slime.y = 700
+                self.menu_coin.tick(self.menu_galo)
+            if self.menu_galo.check_Collision(self.menu_slime) and self.menu_galo.gravity > 0 and self.tour_index == 3:
+                self.menu_slime.alive = False
+                self.menu_galo.setGravity(GRAVITY_SJUMP)
+                self.tour_index += 1
+            if self.menu_coin.caught and self.tour_index == 4:
+                self.tour_index += 1
+            self.interface['sky'].tick(self.cam)
+            self.menu_slime.tick(self.menu_map, self.menu_galo)
+            self.menu_galo.tick(self.menu_map, self.inimigos)
+
+    def render(self, dis, font):
         if self.stage == MENU:
             dis.fill((50, 50, 50))
             self.interface['sky'].render(dis)
@@ -144,13 +181,39 @@ class Game:
             self.interface['buttonExit'].render(dis)
         elif self.stage == GAME_OVER:
             dis.fill((50, 50, 50))
+            text = font.render('Score: ' + str(self.galo.score), True, (255, 255, 255))
+            if self.galo.score > 9:
+                dis.blit(text, (530, 230))
+            else:
+                dis.blit(text, (535, 230))
             self.interface['buttonRetry'].render(dis)
             self.interface['buttonExit'].render(dis)
         elif self.stage == GAME_DONE:
             dis.fill((50, 50, 50))
-            self.interface['buttonNext'].render(dis)
+            text = font.render('Score: ' + str(self.galo.score), True, (255, 255, 255))
+            if self.galo.score > 9:
+                dis.blit(text, (530, 140))
+            else:
+                dis.blit(text, (535, 140))
+            if self.level == 1:
+                self.interface['buttonNext'].render(dis)
+            else:
+                self.interface['buttonMenu'].render(dis)
             self.interface['buttonRetry'].render(dis)
             self.interface['buttonExit'].render(dis)
+        elif self.stage == GAME_TOUR:
+            dis.fill((50, 50, 50))
+            self.interface['sky'].render(dis)
+            self.menu_map.render(dis, self.cam)
+            self.menu_slime.render(dis, self.cam)
+            self.menu_galo.render(dis, self.cam)
+            if self.menu_slime.deadTimer > 60 and self.tour_index == 4:
+                self.menu_coin.render(dis, self.cam)
+            self.interface['Tour'].render(dis)
+            text = font.render(self.tour[self.tour_index], True, (255, 255, 255))
+            dis.blit(text, (35, 25))
+            if self.tour_index == 5:
+                self.interface['buttonMenu'].render(dis)
 
     def events(self):
         if self.galo is not None:
@@ -177,8 +240,26 @@ class Game:
                             self.galo.jumping = False
                             self.galo.gravity = GRAVITY_SJUMP
                     if event.key == pygame.K_o:
-                        self.nextLevel()
-                        self.gameInit()
+                        self.stage = GAME_DONE
+
+                if self.stage == GAME_TOUR:
+                    if event.key == pygame.K_d:
+                        self.menu_galo.setStatus(STT_WALKING)
+                        self.menu_galo.setDir(DIR_RIGTH)
+                    if event.key == pygame.K_a:
+                        self.menu_galo.setStatus(STT_WALKING)
+                        self.menu_galo.setDir(DIR_LEFT)
+                    if event.key == pygame.K_w:
+                        if self.menu_galo.collisionY(self.menu_map):
+                            self.menu_galo.jumping = True
+                            self.menu_galo.gravity = GRAVITY_JUMP
+                            if self.tour_index == 1:
+                                self.tour_index += 1
+                        elif self.menu_galo.jumping:
+                            self.menu_galo.jumping = False
+                            self.menu_galo.gravity = GRAVITY_SJUMP
+                            if self.tour_index == 2:
+                                self.tour_index += 1
 
             if event.type == pygame.KEYUP:
                 if self.stage == IN_GAME:
@@ -188,6 +269,18 @@ class Game:
                     if event.key == pygame.K_a:
                         if self.galo.dir == DIR_LEFT:
                             self.galo.setStatus(STT_STOPED)
+
+                if self.stage == GAME_TOUR:
+                    if event.key == pygame.K_d:
+                        if self.menu_galo.dir == DIR_RIGTH:
+                            self.menu_galo.setStatus(STT_STOPED)
+                            if self.tour_index == 0:
+                                self.tour_index += 1
+                    if event.key == pygame.K_a:
+                        if self.menu_galo.dir == DIR_LEFT:
+                            self.menu_galo.setStatus(STT_STOPED)
+                            if self.tour_index == 0:
+                                self.tour_index += 1
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
@@ -205,10 +298,18 @@ class Game:
                         elif self.interface['buttonPlay'].click(self.x, self.y):
                             self.interface['buttonPlay'].pressed = True
                     elif self.stage == GAME_DONE:
-                        if self.interface['buttonNext'].click(self.x, self.y):
-                            self.interface['buttonNext'].pressed = True
-                        elif self.interface['buttonRetry'].click(self.x, self.y):
+                        if self.level == 1:
+                            if self.interface['buttonNext'].click(self.x, self.y):
+                                self.interface['buttonNext'].pressed = True
+                        else:
+                            if self.interface['buttonMenu'].click(self.x, self.y):
+                                self.interface['buttonMenu'].pressed = True
+                        if self.interface['buttonRetry'].click(self.x, self.y):
                             self.interface['buttonRetry'].pressed = True
+                    elif self.stage == GAME_TOUR:
+                        if self.tour_index == 5:
+                            if self.interface['buttonMenu'].click(self.x, self.y):
+                                self.interface['buttonMenu'].pressed = True
 
                     if self.stage != IN_GAME:
                         if self.interface['buttonExit'].click(self.x, self.y):
@@ -223,6 +324,9 @@ class Game:
                             self.stage = IN_GAME
                         elif self.interface['buttonHowPlay'].click(self.x, self.y) and self.interface['buttonHowPlay'].pressed:
                             self.interface['buttonHowPlay'].pressed = False
+                            self.menu_galo.setStatus(STT_STOPED)
+                            self.start_tour()
+                            self.stage = GAME_TOUR
                     elif self.stage == GAME_OVER:
                         if self.interface['buttonRetry'].click(self.x, self.y) and self.interface['buttonRetry'].pressed:
                             self.interface['buttonRetry'].pressed = False
@@ -238,15 +342,27 @@ class Game:
                             self.galo.setStatus(STT_STOPED)
                             self.stage = IN_GAME
                     elif self.stage == GAME_DONE:
-                        if self.interface['buttonNext'].click(self.x, self.y) and self.interface['buttonNext'].pressed:
-                            self.interface['buttonNext'].pressed = False
-                            self.nextLevel()
-                            self.gameInit()
-                            self.stage = IN_GAME
-                        elif self.interface['buttonRetry'].click(self.x, self.y) and self.interface['buttonRetry'].pressed:
+                        if self.level == 1:
+                            if self.interface['buttonNext'].click(self.x, self.y) and self.interface['buttonNext'].pressed:
+                                self.interface['buttonNext'].pressed = False
+                                self.nextLevel()
+                                self.stage = IN_GAME
+                        else:
+                            if self.interface['buttonMenu'].click(self.x, self.y) and self.interface['buttonMenu'].pressed:
+                                self.interface['buttonMenu'].pressed = False
+                                self.cam = Camera(0, self.menu_map.width * SPRITE_SIZE * SCALE, 0)
+                                self.stage = MENU
+                        if self.interface['buttonRetry'].click(self.x, self.y) and self.interface['buttonRetry'].pressed:
                             self.interface['buttonRetry'].pressed = False
                             self.gameInit()
                             self.stage = IN_GAME
+                    elif self.stage == GAME_TOUR:
+                        if self.tour_index == 5:
+                            if self.interface['buttonMenu'].click(self.x, self.y) and self.interface['buttonMenu'].pressed:
+                                self.interface['buttonMenu'].pressed = False
+                                self.tour_index = 0
+                                self.cam = Camera(0, self.menu_map.width * SPRITE_SIZE * SCALE, 0)
+                                self.stage = MENU
 
                     if self.stage != IN_GAME:
                         if self.interface['buttonExit'].click(self.x, self.y) and self.interface['buttonExit'].pressed:
@@ -257,7 +373,6 @@ class Game:
         return self.run
 
     def nextLevel(self):
-        if self.level == 2:
-            self.level = 1
-        else:
+        if self.level == 1:
             self.level = 2
+            self.gameInit()

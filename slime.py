@@ -32,8 +32,9 @@ class Slime(Entity):
                 self.setGravity(NO_GRAVITY)
 
             if not self.collisionX(world):
-                if self.x + (self.vel * self.dir) < world.width * SPRITE_SIZE * SCALE:
-                    self.x += self.vel * self.dir
+                if self.status == STT_WALKING:
+                    if self.x + (self.vel * self.dir) < world.width * SPRITE_SIZE * SCALE:
+                        self.x += self.vel * self.dir
             else:
                 if self.collisionY(world):
                     self.setGravity(GRAVITY_SJUMP)
