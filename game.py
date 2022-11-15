@@ -55,22 +55,25 @@ class Game:
         self.coin = None
         self.run = True
         self.menu_map = World(101, 11, self.sprites, "menu.json")
-        self.menu_galo = Galo(350, 0, ENTITIES_SIZE, ENTITIES_SIZE, 3, STT_WALKING, galo_ss, 6, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE))
+        self.menu_galo = Galo(350, 0, ENTITIES_SIZE, ENTITIES_SIZE, 3, STT_WALKING, galo_ss, 6, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE), SCALE)
         self.menu_galo.setStatus(STT_WALKING)
         self.menu_timer = 0
         self.cam = Camera(0, self.menu_map.width * SPRITE_SIZE * SCALE, 0)
 
     def gameInit(self):
         galo_ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
-        slime_ss = SpriteSheet(pygame.image.load('src/spritesslime.png').convert_alpha())
+        enemies_sprites = [
+            SpriteSheet(pygame.image.load('src/spritesslime.png').convert_alpha()),
+            SpriteSheet(pygame.image.load('src/moedass.png').convert_alpha())
+        ]
         sky_ss = pygame.image.load('src/ceu1.png').convert_alpha()
         coin_ss = SpriteSheet(pygame.image.load('src/moedass.png').convert_alpha())
-        self.galo = Galo(350, 0, ENTITIES_SIZE, ENTITIES_SIZE, 3, STT_STOPED, galo_ss, 4, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE))
+        self.galo = Galo(350, 0, ENTITIES_SIZE, ENTITIES_SIZE, self.level * 0.5 + 2.5, STT_STOPED, galo_ss, 4, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE), SCALE)
         self.mundo = World(101, 11, self.sprites, "map" + str(self.level) + ".json")
         self.interface['sky'] = Sky(sky_ss, self.level * 3)
         self.cam = Camera(0, self.mundo.width * SPRITE_SIZE * SCALE, self.level + 0.5)
-        self.inimigos = Enemies(int(random() * 10), slime_ss)
-        self.coin = Coin(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, STT_STOPED, coin_ss, 1, 8, Colision_box(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, 0))
+        self.inimigos = Enemies(int(random() * 10), enemies_sprites)
+        self.coin = Coin(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, STT_STOPED, coin_ss, 1, 8, Colision_box(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, 0), SCALE)
 
     def tick(self):
         self.x, self.y = pygame.mouse.get_pos()

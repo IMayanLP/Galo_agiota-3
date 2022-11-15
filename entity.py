@@ -9,7 +9,7 @@ def is_Colliding(p0, p1, x0, x1, y0, y1):
 
 
 class Entity(ABC):
-    def __init__(self, x, y, w, h, vel, status, spritesheet, maxLines, maxframes, colisionBox):
+    def __init__(self, x, y, w, h, vel, status, spritesheet, maxLines, maxframes, colisionBox, e_scale):
         self.alive = True
         self.x = x
         self.y = y
@@ -25,7 +25,7 @@ class Entity(ABC):
         for i in range(maxLines):
             sprites = []
             for j in range(maxframes):
-                sprites.append(spritesheet.get_image(j, i, w, h, SCALE, (0, 0, 0)))
+                sprites.append(spritesheet.get_image(j, i, w, h, e_scale, (0, 0, 0)))
             self.ss.append(sprites)
 
     @abstractmethod

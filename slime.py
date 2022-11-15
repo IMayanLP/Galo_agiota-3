@@ -12,8 +12,8 @@ class Slime(Entity):
         self.gravity = newGravity
 
     def tick(self, world, galo):
+        self.colisionBox.update(self.x, self.y)
         if self.alive:
-            self.colisionBox.update(self.x, self.y)
             distance = galo.x - self.x
             if distance < 0: distance *= -1
             if distance < self.range:
@@ -39,7 +39,11 @@ class Slime(Entity):
                     self.setGravity(GRAVITY_SJUMP)
         else:
             self.deadTimer += 1
-            self.y += 10
+            if not self.collisionY(world):
+                self.setGravity(self.gravity + 1)
+                self.y += self.gravity
+            else:
+                self.setGravity(NO_GRAVITY)
 
         self.animate()
 

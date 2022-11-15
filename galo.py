@@ -1,9 +1,14 @@
 import pygame
+
+from coin import Coin
+from colision_box import Colision_box
 from entity import Entity
 from consts import *
+from spritesheet import SpriteSheet
 
 
 class Galo(Entity):
+    score = 0
     maxLife = 3
     currentLife = maxLife
     invulnerable = 60
@@ -21,6 +26,7 @@ class Galo(Entity):
         self.gravity = newGravity
 
     def tick(self, world, enemies):
+        print(self.score)
         self.colisionBox.update(self.x, self.y)
         if self.status == STT_WALKING:
             if not self.collisionX(world):
