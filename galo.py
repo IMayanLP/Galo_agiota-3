@@ -33,7 +33,8 @@ class Galo(Entity):
             self.jumping = False
             self.setGravity(0)
 
-        self.enemies_Collision(enemies)
+        if enemies is not None:
+            self.enemies_Collision(enemies)
 
         if self.invulnerable < 60:
             self.invulnerable += 1
@@ -48,6 +49,10 @@ class Galo(Entity):
         elif self.status == STT_STOPED:
             if self.dir == DIR_RIGTH: display.blit(self.ss[2][int(self.frame)], (self.x - camera.displacement, self.y))
             else: display.blit(self.ss[3][int(self.frame)], (self.x - camera.displacement, self.y))
+
+        elif self.status == STT_ANIMATING:
+            if self.dir == DIR_RIGTH: display.blit(self.ss[4][int(self.frame)], (self.x - camera.displacement, self.y))
+            else: display.blit(self.ss[5][int(self.frame)], (self.x - camera.displacement, self.y))
 
     def enemies_Collision(self, e):
         for i in range(len(e.enemies['slimes'])):

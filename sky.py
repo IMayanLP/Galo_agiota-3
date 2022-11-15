@@ -6,7 +6,7 @@ from camera import Camera
 
 
 class Sky:
-    def __init__(self, image):
+    def __init__(self, image, vel):
         width = image.get_width()
         height = image.get_height()
         self.image1 = pygame.transform.scale(image, (int(width * SCALE), int(height * SCALE)))
@@ -16,7 +16,7 @@ class Sky:
         self.x1 = 0
         self.x2 = self.x1 + self.w
         self.y = 0
-        self.vel = 3
+        self.vel = vel
         self.moving = True
 
     def tick(self, camera):

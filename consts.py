@@ -24,6 +24,7 @@ DIR_LEFT = -1
 
 STT_STOPED = 0
 STT_WALKING = 1
+STT_ANIMATING = 2
 
 NO_GRAVITY = 0 # no gravity
 GRAVITY_JUMP = -20 # jump gravity
