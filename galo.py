@@ -26,7 +26,6 @@ class Galo(Entity):
         self.gravity = newGravity
 
     def tick(self, world, enemies):
-        print(self.score)
         self.colisionBox.update(self.x, self.y)
         if self.status == STT_WALKING:
             if not self.collisionX(world):

@@ -29,6 +29,8 @@ class Game:
         botao_menu2 = pygame.image.load('src/menu2.png').convert_alpha()
         botao_howPlay = pygame.image.load('src/howplay1.png').convert_alpha()
         botao_howPlay2 = pygame.image.load('src/howplay2.png').convert_alpha()
+        botao_next = pygame.image.load('src/next1.png').convert_alpha()
+        botao_next2 = pygame.image.load('src/next2.png').convert_alpha()
         title = pygame.image.load('src/title.png').convert_alpha()
         self.interface = {
             'heartSprite': [],
@@ -36,6 +38,7 @@ class Game:
             'buttonExit': Button(536, 400, botao_sair, botao_sair2),
             'buttonRetry': Button(536, 300, botao_retry, botao_retry2),
             'buttonMenu': Button(536, 200, botao_menu, botao_menu2),
+            'buttonNext': Button(536, 200, botao_next, botao_next2),
             'buttonHowPlay': Button(965, 600, botao_howPlay, botao_howPlay2),
             'Title': Button(420, -40, title, title),
             'sky': Sky(sky_ss, 1)
@@ -79,8 +82,7 @@ class Game:
         self.x, self.y = pygame.mouse.get_pos()
         if self.stage == IN_GAME:
             if self.coin.caught:
-                self.nextLevel()
-                self.gameInit()
+                self.stage = GAME_DONE
             if self.galo.currentLife <= 0 or self.galo.colisionBox.x + self.galo.colisionBox.w < self.cam.displacement:
                 self.stage = GAME_OVER
             self.cam.tick()
@@ -144,6 +146,11 @@ class Game:
             dis.fill((50, 50, 50))
             self.interface['buttonRetry'].render(dis)
             self.interface['buttonExit'].render(dis)
+        elif self.stage == GAME_DONE:
+            dis.fill((50, 50, 50))
+            self.interface['buttonNext'].render(dis)
+            self.interface['buttonRetry'].render(dis)
+            self.interface['buttonExit'].render(dis)
 
     def events(self):
         if self.galo is not None:
@@ -197,6 +204,11 @@ class Game:
                             self.interface['buttonMenu'].pressed = True
                         elif self.interface['buttonPlay'].click(self.x, self.y):
                             self.interface['buttonPlay'].pressed = True
+                    elif self.stage == GAME_DONE:
+                        if self.interface['buttonNext'].click(self.x, self.y):
+                            self.interface['buttonNext'].pressed = True
+                        elif self.interface['buttonRetry'].click(self.x, self.y):
+                            self.interface['buttonRetry'].pressed = True
 
                     if self.stage != IN_GAME:
                         if self.interface['buttonExit'].click(self.x, self.y):
@@ -224,6 +236,16 @@ class Game:
                         elif self.interface['buttonPlay'].click(self.x, self.y) and self.interface['buttonPlay'].pressed:
                             self.interface['buttonPlay'].pressed = False
                             self.galo.setStatus(STT_STOPED)
+                            self.stage = IN_GAME
+                    elif self.stage == GAME_DONE:
+                        if self.interface['buttonNext'].click(self.x, self.y) and self.interface['buttonNext'].pressed:
+                            self.interface['buttonNext'].pressed = False
+                            self.nextLevel()
+                            self.gameInit()
+                            self.stage = IN_GAME
+                        elif self.interface['buttonRetry'].click(self.x, self.y) and self.interface['buttonRetry'].pressed:
+                            self.interface['buttonRetry'].pressed = False
+                            self.gameInit()
                             self.stage = IN_GAME
 
                     if self.stage != IN_GAME:
