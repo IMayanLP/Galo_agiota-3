@@ -1,5 +1,5 @@
 import pygame
-import random
+from random import random
 from consts import *
 
 from sky import Sky
@@ -99,7 +99,7 @@ class Game:
         self.mundo = World(101, 11, self.sprites, "map" + str(self.level) + ".json")
         self.interface['sky'] = Sky(sky_ss, self.level * 3)
         self.cam = Camera(0, self.mundo.width * SPRITE_SIZE * SCALE, self.level + 0.5)
-        self.inimigos = Enemies(random.randint(8, 15), enemies_sprites, 300 / self.level)
+        self.inimigos = Enemies(int(random()*10), enemies_sprites, 300 / self.level)
         self.coin = Coin(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, STT_STOPED, coin_ss, 1, 8, Colision_box(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, 0), SCALE)
         self.menu_song.stop()
         self.game_song.play(-1)
