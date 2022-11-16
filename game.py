@@ -18,6 +18,14 @@ class Game:
     def __init__(self):
         # spritesheets
         self.level = 1
+
+        self.menu_song = pygame.mixer.Sound('sounds/menu.mp3')
+        self.menu_song.set_volume(0.5)
+        self.menu_song.play(-1)
+
+        self.game_song = pygame.mixer.Sound('sounds/ingame.mp3')
+        self.game_song.set_volume(0.5)
+
         sky_ss = pygame.image.load('src/ceu1.png').convert_alpha()
         heart_ss = SpriteSheet(pygame.image.load('src/hearts.png').convert_alpha())
         botao_play = pygame.image.load('src/play1.png').convert_alpha()
@@ -78,6 +86,8 @@ class Game:
         self.menu_coin = None
 
     def gameInit(self):
+        self.menu_song.stop()
+        self.game_song.stop()
         galo_ss = SpriteSheet(pygame.image.load('src/spritesgalo.png').convert_alpha())
         enemies_sprites = [
             SpriteSheet(pygame.image.load('src/spritesslime.png').convert_alpha()),
@@ -91,6 +101,8 @@ class Game:
         self.cam = Camera(0, self.mundo.width * SPRITE_SIZE * SCALE, self.level + 0.5)
         self.inimigos = Enemies(int(random() * 10), enemies_sprites)
         self.coin = Coin(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, STT_STOPED, coin_ss, 1, 8, Colision_box(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, 0), SCALE)
+        self.menu_song.stop()
+        self.game_song.play(-1)
 
     def start_tour(self):
         slimes_ss = SpriteSheet(pygame.image.load('src/spritesslime.png').convert_alpha())
@@ -100,7 +112,6 @@ class Game:
         self.tour_index = 0
 
     def tick(self):
-        print(self.tour_index)
         self.x, self.y = pygame.mouse.get_pos()
         if self.stage == IN_GAME:
             if self.coin.caught:
@@ -316,7 +327,6 @@ class Game:
                             self.interface['buttonExit'].pressed = True
 
             if event.type == pygame.MOUSEBUTTONUP:
-                    x, y = pygame.mouse.get_pos()
                     if self.stage == MENU:
                         if self.interface['buttonPlay'].click(self.x, self.y) and self.interface['buttonPlay'].pressed:
                             self.interface['buttonPlay'].pressed = False
@@ -336,6 +346,8 @@ class Game:
                         if self.interface['buttonMenu'].click(self.x, self.y) and self.interface['buttonMenu'].pressed:
                             self.interface['buttonMenu'].pressed = False
                             self.cam = Camera(0, self.menu_map.width * SPRITE_SIZE * SCALE, 0)
+                            self.game_song.stop()
+                            self.menu_song.play(-1)
                             self.stage = MENU
                         elif self.interface['buttonPlay'].click(self.x, self.y) and self.interface['buttonPlay'].pressed:
                             self.interface['buttonPlay'].pressed = False
@@ -350,6 +362,8 @@ class Game:
                         else:
                             if self.interface['buttonMenu'].click(self.x, self.y) and self.interface['buttonMenu'].pressed:
                                 self.interface['buttonMenu'].pressed = False
+                                self.game_song.stop()
+                                self.menu_song.play(-1)
                                 self.cam = Camera(0, self.menu_map.width * SPRITE_SIZE * SCALE, 0)
                                 self.stage = MENU
                         if self.interface['buttonRetry'].click(self.x, self.y) and self.interface['buttonRetry'].pressed:

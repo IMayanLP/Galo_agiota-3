@@ -1,4 +1,5 @@
 import pygame
+
 from game import Game
 from consts import *
 
@@ -6,7 +7,6 @@ pygame.init()
 
 pygame.font.init()
 pygame.font.get_init()
-
 
 dis = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Galo Agiota 3')

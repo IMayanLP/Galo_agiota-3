@@ -9,6 +9,8 @@ from spritesheet import SpriteSheet
 
 class Enemies:
     def __init__(self, slimes_amount, sprites):
+        self.coin_song = pygame.mixer.Sound('sounds/coin.mp3')
+        self.coin_song.set_volume(0.2)
         self.enemies = {'slimes': [],
                         'coins': []}
         self.sprites = sprites
@@ -39,6 +41,7 @@ class Enemies:
                 self.enemies['coins'][i].tick(galo)
                 if self.enemies['coins'][i].caught:
                     galo.score += 1
+                    self.coin_song.play()
                     self.enemies['coins'][i] = None
 
     def render(self, display, camera):
