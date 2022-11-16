@@ -1,5 +1,5 @@
 import pygame
-from random import random
+import random
 from consts import *
 
 from sky import Sky
@@ -76,7 +76,7 @@ class Game:
         self.tour_index = 0
         self.tour = self.tour = [
             "Utilize A e D para se movimentar",
-            "Ótimo, agora utilize W para pular",
+            "Bom, agora utilize W para pular",
             "Use o W novamente enquanto está no ar e faça um double jump",
             "Agora pule encima dos inimigos para matá-los",
             "Eles dropam moedas, pege-as para ganhar pontos de agiotagem",
@@ -95,11 +95,11 @@ class Game:
         ]
         sky_ss = pygame.image.load('src/ceu1.png').convert_alpha()
         coin_ss = SpriteSheet(pygame.image.load('src/moedass.png').convert_alpha())
-        self.galo = Galo(350, 0, ENTITIES_SIZE, ENTITIES_SIZE, self.level * 0.5 + 2.5, STT_STOPED, galo_ss, 4, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE), SCALE)
+        self.galo = Galo(350, 0, ENTITIES_SIZE, ENTITIES_SIZE, self.level + 2, STT_STOPED, galo_ss, 4, 10, Colision_box(350, 350, 30, 30, 4 * SCALE, 8 * SCALE), SCALE)
         self.mundo = World(101, 11, self.sprites, "map" + str(self.level) + ".json")
         self.interface['sky'] = Sky(sky_ss, self.level * 3)
         self.cam = Camera(0, self.mundo.width * SPRITE_SIZE * SCALE, self.level + 0.5)
-        self.inimigos = Enemies(int(random() * 10), enemies_sprites)
+        self.inimigos = Enemies(random.randint(8, 15), enemies_sprites, 300 / self.level)
         self.coin = Coin(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, STT_STOPED, coin_ss, 1, 8, Colision_box(99 * SPRITE_SIZE * SCALE, 8 * SPRITE_SIZE * SCALE, ENTITIES_SIZE, ENTITIES_SIZE, 0, 0), SCALE)
         self.menu_song.stop()
         self.game_song.play(-1)

@@ -4,22 +4,22 @@ from coin import Coin
 from slime import Slime
 from colision_box import Colision_box
 from consts import *
-from spritesheet import SpriteSheet
 
 
 class Enemies:
-    def __init__(self, slimes_amount, sprites):
+    def __init__(self, slimes_amount, sprites, spawn_counter):
         self.coin_song = pygame.mixer.Sound('sounds/coin.mp3')
         self.coin_song.set_volume(0.2)
         self.enemies = {'slimes': [],
                         'coins': []}
         self.sprites = sprites
+        self.spawn_counter = spawn_counter
         self.spawn = 0
         for i in range(slimes_amount):
             self.enemies['slimes'].append(Slime(i*300, 0, ENTITIES_SIZE, ENTITIES_SIZE, 2, STT_WALKING, sprites[0], 2, 10, Colision_box(i*300, 0, 30, 30, 4 * SCALE, 8 * SCALE), SCALE))
 
     def tick(self, world, galo):
-        if self.spawn >= 300:
+        if self.spawn >= self.spawn_counter:
             x = galo.colisionBox.x + galo.colisionBox.w + 150
             if galo.coordToMatriz(x) >= world.width - 1:
                 x = galo.x - 300
