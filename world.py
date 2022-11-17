@@ -7,7 +7,6 @@ from consts import *
 class World:
     def __init__(self, w, h, sprites, file_name):
         self.blocks = []
-        self.entities = []
         self.width = w
         self.height = h
         sps = SpriteSheet(pygame.image.load('src/grama.png').convert_alpha())
