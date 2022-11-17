@@ -327,6 +327,7 @@ class Game:
                     if self.stage == MENU:
                         if self.interface['buttonPlay'].click(self.x, self.y) and self.interface['buttonPlay'].pressed:
                             self.interface['buttonPlay'].pressed = False
+                            self.level = 1
                             self.gameInit()
                             self.stage = IN_GAME
                         elif self.interface['buttonHowPlay'].click(self.x, self.y) and self.interface['buttonHowPlay'].pressed:
