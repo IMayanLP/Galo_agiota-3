@@ -6,8 +6,6 @@ from consts import *
 
 class World:
     def __init__(self, w, h, sprites, file_name):
-        self.phase = 1
-        self.name = "fase" + str(self.phase) + ".txt"
         self.blocks = []
         self.entities = []
         self.width = w

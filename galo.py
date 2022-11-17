@@ -70,8 +70,3 @@ class Galo(Entity):
                     elif self.invulnerable == 60 and e.enemies['slimes'][i].alive:
                         self.currentLife -= e.enemies['slimes'][i].damage
                         self.invulnerable = 0
-
-    def is_Colliding(self, p0, p1, x0, x1, y0, y1):
-        if x0 <= p0 <= x1 and y0 <= p1 <= y1:
-            return True
-        return False
