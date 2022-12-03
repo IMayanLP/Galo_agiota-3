@@ -6,6 +6,13 @@ from colision_box import Colision_box
 from consts import *
 
 
+def set_spawn_x(galo, world):
+    x = galo.colisionBox.x + galo.colisionBox.w + 150
+    if galo.coordToMatriz(x) >= world.width - 1:
+        x = galo.x - 300
+    return x
+
+
 class Enemies:
     def __init__(self, slimes_amount, sprites, spawn_counter):
         self.coin_song = pygame.mixer.Sound('sounds/coin.mp3')
@@ -20,9 +27,7 @@ class Enemies:
 
     def tick(self, world, galo):
         if self.spawn >= self.spawn_counter:
-            x = galo.colisionBox.x + galo.colisionBox.w + 150
-            if galo.coordToMatriz(x) >= world.width - 1:
-                x = galo.x - 300
+            x = set_spawn_x(galo, world)
             self.enemies['slimes'].append(Slime(x, 0, ENTITIES_SIZE, ENTITIES_SIZE, 2, STT_WALKING, self.sprites[0], 2, 10, Colision_box(galo.x + 150, 0, 30, 30, 4 * SCALE, 8 * SCALE), SCALE))
             self.spawn = 0
         else:

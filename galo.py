@@ -1,10 +1,5 @@
-import pygame
-
-from coin import Coin
-from colision_box import Colision_box
 from entity import Entity
 from consts import *
-from spritesheet import SpriteSheet
 
 
 class Galo(Entity):

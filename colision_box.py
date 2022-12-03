@@ -1,7 +1,7 @@
-import pygame
 from consts import *
 
-class Colision_box():
+
+class Colision_box:
     def __init__(self, x, y, width, height, distance_x, distance_y):
         self.x = x
         self.y = y
