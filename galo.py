@@ -42,17 +42,16 @@ class Galo(Entity):
         self.animate()
 
     def render(self, display, camera):
-        if self.status == STT_WALKING:
-            if self.dir == DIR_RIGTH: display.blit(self.ss[0][int(self.frame)], (self.x - camera.displacement, self.y))
-            else: display.blit(self.ss[1][int(self.frame)], (self.x - camera.displacement, self.y))
+        display.blit(self.ss[self.get_ss_line()][int(self.frame)], (self.x - camera.displacement, self.y))
 
-        elif self.status == STT_STOPED:
-            if self.dir == DIR_RIGTH: display.blit(self.ss[2][int(self.frame)], (self.x - camera.displacement, self.y))
-            else: display.blit(self.ss[3][int(self.frame)], (self.x - camera.displacement, self.y))
+    def get_ss_line(self):
+        return self.get_dir() + (self.status * 2)
 
-        elif self.status == STT_ANIMATING:
-            if self.dir == DIR_RIGTH: display.blit(self.ss[4][int(self.frame)], (self.x - camera.displacement, self.y))
-            else: display.blit(self.ss[5][int(self.frame)], (self.x - camera.displacement, self.y))
+    def get_dir(self):
+        if self.dir == DIR_RIGTH:
+            return 0
+        else:
+            return 1
 
     def enemies_Collision(self, e):
         for i in range(len(e.enemies['slimes'])):
