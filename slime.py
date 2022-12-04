@@ -3,10 +3,6 @@ from entity import Entity
 from consts import *
 
 
-def coordToMatriz(coord):
-    return int(coord/(SPRITE_SIZE * SCALE))
-
-
 class Slime(Entity):
     gravity = 0
     range = 150
@@ -61,9 +57,9 @@ class Slime(Entity):
             display.blit(self.ss[1][int(self.frame)], (self.x - camera.displacement, self.y))
 
     def swap_dir(self, world):
-        x0 = coordToMatriz(self.colisionBox.x + (self.vel * self.dir))
-        y = coordToMatriz(self.colisionBox.y + self.colisionBox.h + self.gravity)
-        x1 = coordToMatriz(self.colisionBox.x + self.colisionBox.w + (self.vel * self.dir))
+        x0 = self.coordToMatriz(self.colisionBox.x + (self.vel * self.dir))
+        y = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h + self.gravity)
+        x1 = self.coordToMatriz(self.colisionBox.x + self.colisionBox.w + (self.vel * self.dir))
         if y > world.heigth - 1:
             return False
         if x1 > world.width - 1:
@@ -75,5 +71,6 @@ class Slime(Entity):
 
     def set_distance(self, galo):
         x = galo.x - self.x
-        if x < 0: x *= -1
+        if x < 0:
+            return -x
         return x

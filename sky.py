@@ -1,9 +1,6 @@
 import pygame
 from consts import *
 
-from spritesheet import SpriteSheet
-from camera import Camera
-
 
 class Sky:
     def __init__(self, image, vel):

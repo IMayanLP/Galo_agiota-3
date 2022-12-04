@@ -9,6 +9,11 @@ def is_Colliding(p0, p1, x0, x1, y0, y1):
 
 
 def check_Block_Collision(world, x0, x1, y0, y1):
+    if x0 not in range(0, world.width)\
+            or x1 not in range(0, world.width)\
+            or y0 not in range(0, world.heigth)\
+            or y1 not in range(0, world.heigth):
+        return True
     if world.blocks[x0][y1] is not None:
         if world.blocks[x0][y1].ColisionType:
             return True
@@ -22,10 +27,6 @@ def check_Block_Collision(world, x0, x1, y0, y1):
         if world.blocks[x1][y1].ColisionType:
             return True
     return False
-
-
-def coordToMatriz(coord):
-    return int(coord/(SPRITE_SIZE * SCALE))
 
 
 class Entity(ABC):
@@ -62,28 +63,26 @@ class Entity(ABC):
             self.frame += ANIMATION_SPEED
 
     def collisionY(self, world):
-        x0 = coordToMatriz(self.colisionBox.x)
-        y1 = coordToMatriz(self.colisionBox.y + self.colisionBox.h + self.gravity)
-        x1 = coordToMatriz(self.colisionBox.x + self.colisionBox.w)
-        y0 = coordToMatriz(self.colisionBox.y + self.gravity + 15)
+        x0 = self.coordToMatriz(self.colisionBox.x)
+        y1 = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h + self.gravity)
+        x1 = self.coordToMatriz(self.colisionBox.x + self.colisionBox.w)
+        y0 = self.coordToMatriz(self.colisionBox.y + self.gravity + 15)
         if y1 > world.heigth - 1:
             self.alive = False
             return True
         if check_Block_Collision(world, x0, x1, y0, y1):
             return True
-
         return False
 
     def collisionX(self, world):
-        x0 = coordToMatriz(self.colisionBox.x + self.colisionBox.w + (self.vel * self.dir))
-        x1 = coordToMatriz(self.colisionBox.x + (self.vel * self.dir))
-        y1 = coordToMatriz(self.colisionBox.y + self.colisionBox.h - 1)
-        y0 = coordToMatriz(self.colisionBox.y - 1)
+        x0 = self.coordToMatriz(self.colisionBox.x + self.colisionBox.w + (self.vel * self.dir))
+        x1 = self.coordToMatriz(self.colisionBox.x + (self.vel * self.dir))
+        y1 = self.coordToMatriz(self.colisionBox.y + self.colisionBox.h - 1)
+        y0 = self.coordToMatriz(self.colisionBox.y - 1)
         if x0 > world.width - 1:
             return True
         if check_Block_Collision(world, x0, x1, y0, y1):
             return True
-
         return False
 
     def check_Collision(self, e2):
@@ -97,3 +96,6 @@ class Entity(ABC):
                 or is_Colliding(x1, y0, e2.colisionBox.x, e2.colisionBox.x + e2.colisionBox.w, e2.colisionBox.y, e2.colisionBox.y + e2.colisionBox.h):
             return True
         return False
+
+    def coordToMatriz(self, coord):
+        return int(coord / (SPRITE_SIZE * SCALE))
